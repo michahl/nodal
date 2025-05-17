@@ -3,6 +3,7 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import UserAuthButton from "@/components/auth/userbutton";
 
 const interTight = Inter_Tight({ subsets: ["latin"] });
 
@@ -18,10 +19,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <Link href="/">
           <span className="text-neutral-950">gnosei</span>
         </Link>
-        <nav className="flex gap-6">
+        <nav className="flex items-center gap-4">
           <Link href="https://github.com/michahl/gnosei" target="_blank">
             <GitHubLogoIcon className="h-6 w-6 text-neutral-800 transition-colors hover:text-neutral-600" />
           </Link>
+          <UserAuthButton />
         </nav>
       </header>
       <main className="flex-1">{children}</main>
