@@ -16,6 +16,21 @@ export default function Home() {
           </p>
         </div>
       </div>
+      <div className="mx-auto max-w-xl">
+        <form className="flex items-center">
+          <input 
+            type="text"
+            className="w-full border border-neutral-200 px-3 py-1.5 rounded-l-lg focus:outline-none"
+            placeholder="How money inflation works?"
+          />
+          <button 
+            type="submit"
+            className="text-neutral-50 border border-neutral-800 bg-neutral-800 px-4 py-1.5 rounded-r-lg hover:bg-neutral-600"
+          >
+            Explore
+          </button>
+        </form>
+      </div>
     </>
   );
 }

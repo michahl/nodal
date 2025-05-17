@@ -4,6 +4,7 @@ import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import UserAuthButton from "@/components/auth/userbutton";
+import { AuthProvider } from "@/context/auth";
 
 const interTight = Inter_Tight({ subsets: ["latin"] });
 
@@ -35,10 +36,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               href="https://github.com/michahl"
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-1 rounded-full bg-neutral-100 px-2 py-1 text-neutral-950"
+              className="mx-1 rounded-full bg-neutral-100 px-2 py-1 text-neutral-950 hover:text-neutral-800"
             >
               @michahl
             </a>
+            powered by Sonar
           </span>
         </div>
       </footer>
@@ -57,9 +59,11 @@ export default function RootLayout({
         className={`${interTight.className} antialiased`}
         suppressHydrationWarning
       >
-        <Layout>
-          {children}
-        </Layout>
+        <AuthProvider>
+          <Layout>
+            {children}
+          </Layout>
+        </AuthProvider>
       </body>
     </html>
   );
