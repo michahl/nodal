@@ -38,7 +38,7 @@ export default function Home() {
               <input 
                 type="text"
                 className="w-full border border-neutral-200 px-3 py-1.5 rounded-l-lg focus:outline-none"
-                placeholder="How money inflation works?"
+                placeholder="eg. How money inflation works?"
               />
               <button 
                 type="submit"

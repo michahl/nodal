@@ -12,9 +12,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="relative mx-auto flex h-dvh w-full max-w-6xl flex-col px-6 md:px-8 lg:px-12">
       <header className="flex items-center justify-between py-8">
-        <Link href="/">
-          <span className="text-neutral-950">gnosei</span>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/">
+            <span className="text-neutral-950">gnosei</span>
+          </Link>
+          /
+          <Link href="/dashboard">
+            <span className="text-neutral-950">dashboard</span>
+          </Link>
+        </div>
         <nav className="flex gap-4">
           <User />
         </nav>
