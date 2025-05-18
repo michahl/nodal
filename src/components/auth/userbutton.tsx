@@ -51,7 +51,7 @@ export default function UserAuthButton() {
             >
               &#215;
             </button>
-            <SignIn />
+            <SignIn onAuthSuccess={() => setIsOpen(false)} />
           </dialog>
         </div>
       )}

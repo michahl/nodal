@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 const LoadingSpinner = () => {
     return (
@@ -12,7 +13,7 @@ const LoadingSpinner = () => {
     )
 }
 
-export default function SignIn() {
+export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }) {
     const [login, setLogin] = useState(true);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -21,11 +22,7 @@ export default function SignIn() {
 
     const supabase = createClient();
 
-    const handleSignInSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError("");
-
+    const handleSignInSubmit = async () => {
         const { error } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -34,13 +31,39 @@ export default function SignIn() {
         if (error) {
             setError(error.message);
         }
+        onAuthSuccess?.();
+    };
+
+    const handleSignUpSubmit = async () => {
+        const { error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+        });
+
+        if (error) {
+            setError(error.message);
+        }
+        onAuthSuccess?.();
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
+
+        if (login) {
+            await handleSignInSubmit();
+        } else {
+            await handleSignUpSubmit();
+        }
+
 
         setLoading(false);
     };
 
     return (
         <form
-            onSubmit={handleSignInSubmit}
+            onSubmit={handleSubmit}
             className="mt-5"
         >
             <div className="w-full grid grid-cols-2 bg-neutral-200/40 p-1 rounded-lg">
@@ -155,6 +178,7 @@ export default function SignIn() {
                         {
                             error && (
                                 <div className="mt-2 text-sm text-red-500">
+                                    <ExclamationTriangleIcon className="inline-block mr-1" />
                                     {error}
                                 </div>
                             )

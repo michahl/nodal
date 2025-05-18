@@ -40,7 +40,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             >
               @michahl
             </a>
-            powered by Sonar
+            powered by <a href="https://sonar.perplexity.ai/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Sonar</a>
           </span>
         </div>
       </footer>
