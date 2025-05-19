@@ -1,10 +1,14 @@
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import ExploreClient from "@/components/explore/explore";
 import { getServerAuth } from "@/context/serverAuth";
 
-export default async function ExplorePage({ params }: { params: { slug: string } }) {
+export default async function ExplorePage({
+  params
+}: {
+  params: Promise<{ slug: string }>
+}) {
   const { slug } = await params;
   const { user } = await getServerAuth({ 
       redirectTo: "/" 

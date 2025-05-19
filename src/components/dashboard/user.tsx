@@ -12,9 +12,7 @@ export default function User() {
 
     const { user, signOut } = useAuth(); 
 
-    const handleSignOut = async (
-        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-    ) => {
+    const handleSignOut = async () => {
         setOpen(false);
 
         setTimeout(async () => {

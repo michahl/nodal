@@ -20,7 +20,7 @@ export default async function Dashboard() {
     
     const supabase = createClient(cookieStore);
     
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     
     let explorations = null;
     let error = null;

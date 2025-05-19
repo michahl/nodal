@@ -78,8 +78,8 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
         <div className="max-w-sm lg:max-w-md col-span-4 lg:col-span-3 h-full border-l border-neutral-200 pl-6 overflow-y-scroll scrollbar-hide hidden md:block">
                 {selectedNode ? (
                 <>
-                    <h2 className="text-xl font-medium leading-6 mb-10">{selectedNode.label}</h2>
-                    <p className="mb-4">{selectedNode.description}</p>
+                    <h2 className="text-xl font-medium leading-6">{selectedNode.label}</h2>
+                    <p className="mb-4 mt-5">{selectedNode.description}</p>
                     <div className="px-4 py-2 border border-neutral-200 rounded-md text-sm">
                     <h3 className="font-medium">AI Reasoning</h3>
                     <p className="text-neutral-500">{selectedNode.reasoning}</p>

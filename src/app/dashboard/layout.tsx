@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }){
-  const { user, supabase } = await getServerAuth({ 
+  const { } = await getServerAuth({ 
     redirectTo: "/" 
   });
 
