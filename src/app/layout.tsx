@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { Inter_Tight } from "next/font/google";
 import "./globals.css";
-import Link from "next/link";
-import UserAuthButton from "@/components/auth/userbutton";
 import { AuthProvider } from "@/context/auth";
 
 const interTight = Inter_Tight({ subsets: ["latin"] });

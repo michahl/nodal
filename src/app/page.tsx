@@ -2,7 +2,7 @@ import UserAuthButton from "@/components/auth/userbutton";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
   return (
     <>
       <div className="relative mx-auto flex h-dvh w-full max-w-6xl flex-col px-6 md:px-8 lg:px-12">
@@ -17,6 +17,8 @@ export default function Home() {
             <UserAuthButton />
           </nav>
         </header>
+
+
         <main className="flex-1">
           <div className="relative pb-12 pt-8">
             <div className='absolute left-0 top-0 -z-10 h-full w-full'>
@@ -49,6 +51,8 @@ export default function Home() {
             </form>
           </div>
         </main>
+
+
         <footer>
           <div className="flex items-center justify-center py-8">
             <span className="text-sm text-neutral-800">
