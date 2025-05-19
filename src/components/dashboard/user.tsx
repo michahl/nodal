@@ -45,7 +45,7 @@ export default function User() {
                 onClick={() => setOpen((o) => !o)} 
                 className="border border-neutral-200 rounded-2xl cursor-pointer"
             >
-            <div className="m-0.5 w-8 h-8 rounded-xl bg-gradient-to-bl from-[#ffe4e6] to-[#ccfbf1] ">
+            <div className="m-0.5 w-7 h-7 rounded-full bg-gradient-to-bl from-[#ffe4e6] to-[#ccfbf1] ">
                 <span className="sr-only">
                 User Menu
                 </span>
@@ -53,7 +53,7 @@ export default function User() {
             </button>
             {open && (
             <div
-                className="absolute right-0 mt-1 w-54 z-10 bg-white border border-neutral-200 rounded-lg shadow-md p-1"
+                className="absolute right-0 mt-1 w-54 z-10 bg-white border border-neutral-200 rounded-md shadow-md p-1"
             >
                 <button className="w-full text-left px-2 py-3 text-sm text-gray-700 flex flex-col items-start border-b border-b-neutral-200">
                     <span className="text-xs text-gray-500">Logged in as</span>
@@ -61,8 +61,11 @@ export default function User() {
                         {user?.email}
                     </span>
                 </button>
-                <Link href="/dashboard/user" passHref>
-                    <button className="cursor-pointer w-full flex items-center text-left mt-1 px-3 py-2 text-sm text-neutral-700 rounded-md hover:bg-neutral-100">
+                <Link href="/dashboard/user">
+                    <button 
+                        className="cursor-pointer w-full flex items-center text-left mt-1 px-3 py-2 text-sm text-neutral-700 rounded-md hover:bg-neutral-100"
+                        onClick={() => setOpen(false)}
+                    >
                         <GearIcon className="inline-block mr-2" />
                         Settings
                     </button>
