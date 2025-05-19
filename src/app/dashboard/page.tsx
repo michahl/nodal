@@ -1,5 +1,3 @@
-
-
 import { createClient } from "@/utils/supabase/server";
 import { CommitIcon, DotFilledIcon, PlusIcon } from "@radix-ui/react-icons";
 import { cookies } from "next/headers";
@@ -45,9 +43,6 @@ export default async function Dashboard() {
     if (error) {
         console.error("Error fetching explorations:", error);
     }
-    console.log("Fetched explorations:", explorations);
-  
-    
 
     return (
         <div className="h-full flex flex-col">
@@ -59,7 +54,7 @@ export default async function Dashboard() {
             </div>
             {
                 explorations && explorations.length > 0 ? (
-                    <div className="mt-4 grid grid-cols-2 gap-4">
+                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                         {explorations.map((exploration: Exploration) => (
                             <Link
                                 href={`/dashboard/explore/${exploration.slug}`}

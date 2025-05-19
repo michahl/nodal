@@ -5,7 +5,7 @@ export default function UserPage() {
         <>
             <h1 className="text-xl">Account Settings</h1>
             <div className="border border-neutral-200 rounded-md py-2 mt-4">
-                <h2 className="text-lg border-b border-neutral-200 px-5 pb-2">Profile information</h2>
+                <h2 className="text-sm text-neutral-700 border-b border-neutral-200 px-5 pb-2">Profile information</h2>
 
                 <div className="border-b border-neutral-200 px-5 py-2"> 
                     <div className="grid grid-cols-1 gap-2">
@@ -46,7 +46,7 @@ export default function UserPage() {
             </div>
 
             <div className="border border-neutral-200 rounded-md py-2 mt-4">
-                <h2 className="text-lg border-b border-neutral-200 px-5 pb-2">Security</h2>
+                <h2 className="text-sm text-neutral-700 border-b border-neutral-200 px-5 pb-2">Security</h2>
 
                 <div className="border-b border-neutral-200 px-5 py-2"> 
                     <div className="grid grid-cols-1 gap-2">
@@ -98,7 +98,7 @@ export default function UserPage() {
             </div>
 
             <div className="border border-neutral-200 rounded-md py-2 mt-4">
-                <h2 className="text-lg border-b border-neutral-200 px-5 pb-2">DANGER ZONE</h2>
+                <h2 className="text-sm text-neutral-700 border-b border-neutral-200 px-5 pb-2">DANGER ZONE</h2>
 
                 <div className="border border-red-200 bg-red-50 p-2 rounded-md mx-5 mt-4 my-2">
                     <div className="flex justify-start items-start gap-2 px-2 py-1">
@@ -111,7 +111,7 @@ export default function UserPage() {
                             </span>
                             <span className="text-sm text-neutral-600">Deleting your account is permanent and cannot be undone. Your data will be deleted within 30 days, except we may retain some metadata and logs for longer where required or permitted by law.</span>
 
-                            <button className="mt-3 text-sm border-red-600 border rounded bg-red-400/90 text-white px-5 py-0.5 cursor-pointer">
+                            <button className="mt-3 text-sm border-red-600 border rounded bg-red-400 text-white px-5 py-0.5 cursor-pointer">
                                 Delete account
                             </button>
                         </div>
