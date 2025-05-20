@@ -3,7 +3,6 @@ import "../globals.css";
 import Link from "next/link";
 import User from "@/components/dashboard/user";
 import { getServerAuth } from "@/context/serverAuth";
-import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Create Next App",

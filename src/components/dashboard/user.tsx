@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/auth";
-import { ExitIcon, GearIcon } from "@radix-ui/react-icons";
+import { ChatBubbleIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React, { useState, useRef, useEffect } from "react";
@@ -59,13 +59,23 @@ export default function User() {
                         {user?.email}
                     </span>
                 </button>
-                <Link href="/dashboard/user">
+                <Link href="/dashboard/settings">
                     <button 
                         className="cursor-pointer w-full flex items-center text-left mt-1 px-3 py-2 text-sm text-neutral-700 rounded-md hover:bg-neutral-100"
                         onClick={() => setOpen(false)}
                     >
                         <GearIcon className="inline-block mr-2" />
                         Settings
+                    </button>
+                </Link>
+
+                <Link href="/dashboard/contact">
+                    <button 
+                        className="cursor-pointer w-full flex items-center text-left mt-1 px-3 py-2 text-sm text-neutral-700 rounded-md hover:bg-neutral-100"
+                        onClick={() => setOpen(false)}
+                    >
+                        <ChatBubbleIcon className="inline-block mr-2" />
+                        Support & Feedback
                     </button>
                 </Link>
 
