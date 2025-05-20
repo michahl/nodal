@@ -19,7 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <header className="flex items-center justify-between py-8">
         <div className="flex gap-2">
           <Link href="/">
-            <span className="text-neutral-950">gnosei</span>
+            <span className="text-neutral-950">nodal</span>
           </Link>
           /
           <Link href="/dashboard">

@@ -180,7 +180,7 @@ export { toast };
 // Components
 export function Toaster({
   position = "bottom-right",
-  expand = true,
+  expand = false,
   visibleToasts = 3,
   richColors = false,
   closeButton = true,

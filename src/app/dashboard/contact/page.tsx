@@ -1,6 +1,8 @@
 "use client";
 
+import { toast } from "@/components/ui/sonar";
 import { useAuth } from "@/context/auth";
+import { CheckIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 
 export default function Contact() {
@@ -32,6 +34,13 @@ export default function Contact() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(payload),
+            });
+
+            toast.success("", {
+                description: "Your message has been sent successfully!",
+                duration: 5000,
+                dismissible: false,
+                icon: <CheckIcon className="text-green-500 w-4 h-4" />,
             });
             // Optionally reset form or show success message
             setFormData({ subject: "", message: "" });

@@ -3,6 +3,7 @@ import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/auth";
 import { SonarProvider, Toaster } from "@/components/ui/sonar";
+import Script from 'next/script'
 
 const interTight = Inter_Tight({ subsets: ["latin"] });
 
@@ -19,6 +20,11 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <Script
+        defer
+        src='https://cloud.umami.is/script.js'
+        data-website-id='f7f79308-10ce-4c1f-8662-18dc4dab029d'
+      />
       <body
         className={`${interTight.className} antialiased`}
         suppressHydrationWarning
