@@ -5,6 +5,7 @@ import { useState } from "react";
 import { CheckIcon, PlusIcon } from "@radix-ui/react-icons";
 import { Dialog, DialogContent, DialogDescription, DialogTrigger } from "../ui/dialog";
 import { useRouter } from "next/navigation";
+import { toast } from "../ui/sonar";
 
 export default function Explore() {
     const router = useRouter();
@@ -72,6 +73,12 @@ export default function Explore() {
 
             if (graphData.slug) {
                 setStep(0);
+                toast.success("", {
+                    description: "Graph generated successfully",
+                    duration: 5000,
+                    dismissible: false,
+                    icon: <CheckIcon className="text-green-500 w-4 h-4" />,
+                });
                 router.push(`/dashboard/explore/${graphData.slug}`);
             } else {
                 setError("Failed to generate graph");

@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { CheckIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { toast } from "../ui/sonar";
+import { motion } from "framer-motion";
 
 const LoadingSpinner = () => {
     return (
@@ -19,8 +21,13 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [indicator, setIndicator] = useState(0);
 
     const supabase = createClient();
+
+    useEffect(() => {
+        setIndicator(login ? 0 : 98);
+    }, [login])
 
     const handleSignInSubmit = async () => {
         const { error } = await supabase.auth.signInWithPassword({
@@ -30,7 +37,15 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
 
         if (error) {
             setError(error.message);
+            return;
         }
+
+        toast.success("", {
+            description: "Signed in successfully",
+            duration: 5000,
+            dismissible: false,
+            icon: <CheckIcon className="text-green-500 w-4 h-4" />,
+        });
         onAuthSuccess?.();
     };
 
@@ -41,8 +56,19 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
         });
 
         if (error) {
+            if (error.status === 422) {
+                setError("Password is too weak. Please choose a stronger password.");
+                return;
+            }
             setError(error.message);
+            return;
         }
+        toast.success("", {
+            description: "Check your email for a confirmation link.",
+            duration: 5000,
+            dismissible: false,
+            icon: <CheckIcon className="text-green-500 w-4 h-4" />,
+        });
         onAuthSuccess?.();
     };
 
@@ -57,7 +83,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
             await handleSignUpSubmit();
         }
 
-
+        
         setLoading(false);
     };
 
@@ -66,22 +92,35 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
             onSubmit={handleSubmit}
             className="mt-5"
         >
-            <div className="w-full grid grid-cols-2 bg-neutral-200/40 p-1 rounded-lg">
-                <button
-                    type="button"
-                    onClick={() => setLogin(true)}
-                    className={`${login ? "bg-neutral-800 text-neutral-50" : "text-black"} rounded-md py-1`}
-                >
-                    Sign in
-                </button>
-                
-                <button
-                    type="button"
-                    onClick={() => setLogin(false)}
-                    className={`${!login ? "bg-neutral-800 text-neutral-50" : "text-black"} rounded-md py-1`}
-                >
-                    Create account
-                </button>
+            <div className="w-full relative bg-neutral-200/40 p-1 rounded-lg">
+                <motion.div 
+                    className="absolute top-1 bottom-1 w-[calc(50%-2px)] bg-neutral-800 rounded-md z-0"
+                    animate={{ x: `${indicator}%` }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                        duration: 0.3,
+                    }}
+                />
+
+                <div className="grid grid-cols-2 relative z-10">
+                    <button
+                        type="button"
+                        onClick={() => setLogin(true)}
+                        className={`${login ? "text-neutral-50" : "text-black"} relative z-10 rounded-md py-1 transition-colors duration-200`}
+                    >
+                        Sign in
+                    </button>
+                    
+                    <button
+                        type="button"
+                        onClick={() => setLogin(false)}
+                        className={`${!login ? "text-neutral-50" : "text-black"} relative z-10 rounded-md py-1 transition-colors duration-200`}
+                    >
+                        Create account
+                    </button>
+                </div>
             </div>
 
             {
@@ -128,9 +167,13 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                         </button>
                         {
                             error && (
-                                <div className="mt-2 text-sm text-red-500">
+                                <motion.div
+                                    initial={{ opacity: 0, y: -5 }}
+                                    animate={{ opacity: 1, y: 0 }} 
+                                    className="mt-2 text-sm text-red-500"
+                                >
                                     {error}
-                                </div>
+                                </motion.div>
                             )
                         }
                     </div>
@@ -177,10 +220,13 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                         </button>
                         {
                             error && (
-                                <div className="mt-2 text-sm text-red-500">
-                                    <ExclamationTriangleIcon className="inline-block mr-1" />
+                                <motion.div
+                                    initial={{ opacity: 0, y: -5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="mt-2 text-sm text-red-500"
+                                >
                                     {error}
-                                </div>
+                                </motion.div>
                             )
                         }
                     </div>

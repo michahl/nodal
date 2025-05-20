@@ -152,8 +152,6 @@ export async function POST(request: Request) {
                 );
             }
 
-            console.log(JSON.stringify(graphData.nodes || []))
-
             const { data: savedMap, error: dbError } = await supabase
                 .from("knowledge_maps")
                 .insert([

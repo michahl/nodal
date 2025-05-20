@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/auth";
+import { SonarProvider, Toaster } from "@/components/ui/sonar";
 
 const interTight = Inter_Tight({ subsets: ["latin"] });
 
@@ -23,7 +24,13 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <AuthProvider>
-            {children}
+            <SonarProvider>
+              {children}
+              <Toaster
+                position="top-center"
+                duration={5000}
+              />
+            </SonarProvider>
         </AuthProvider>
       </body>
     </html>
