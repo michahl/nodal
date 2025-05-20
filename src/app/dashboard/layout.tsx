@@ -3,6 +3,7 @@ import "../globals.css";
 import Link from "next/link";
 import User from "@/components/dashboard/user";
 import { getServerAuth } from "@/context/serverAuth";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,7 +24,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </Link>
           /
           <Link href="/dashboard">
-            <span className="text-neutral-950">dashboard</span>
+            <span className="text-neutral-950  underline underline-offset-5 decoration-wavy decoration-neutral-950">dashboard</span>
           </Link>
         </div>
         <nav className="flex gap-4">

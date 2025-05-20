@@ -1,6 +1,8 @@
 import UserAuthButton from "@/components/auth/userbutton";
 import Explore from "@/components/main/explore";
+import FaqSection from "@/components/main/faq";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
@@ -10,12 +12,9 @@ export default function Home() {
       <div className="relative mx-auto flex h-dvh w-full max-w-6xl flex-col px-6 md:px-8 lg:px-12">
         <header className="flex items-center justify-between py-8">
           <Link href="/">
-            <span className="text-neutral-950">gnosei</span>
+            <span className="text-neutral-950 underline underline-offset-5 decoration-wavy decoration-neutral-950">gnosei</span>
           </Link>
-          <nav className="flex items-center gap-4">
-            <Link href="https://github.com/michahl/gnosei" target="_blank">
-              <GitHubLogoIcon className="h-6 w-6 text-neutral-800 transition-colors hover:text-neutral-600" />
-            </Link>
+          <nav>
             <UserAuthButton />
           </nav>
         </header>
@@ -37,7 +36,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="mx-auto max-w-xl">
+          <div className="mx-auto max-w-4xl">
             <Explore />
           </div>
 
@@ -84,6 +83,16 @@ export default function Home() {
               </div>
 
             </div>
+          </div>
+
+          <div className="mx-auto mt-12">
+            <div className="mx-auto mt-0 md:mt-20 max-w-md flex flex-col items-center mb-4">
+              <span className="text-xs bg-neutral-200/60 rounded-full px-3 py-0.5">FAQ</span>
+                <h3 className="inline-block text-center text-lg font-medium text-gray-900">
+                  Frequently Asked Questions
+                </h3>
+            </div>
+            <FaqSection />
           </div>
         </main>
 

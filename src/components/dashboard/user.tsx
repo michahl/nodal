@@ -38,12 +38,12 @@ export default function User() {
     }, []);
 
     return (
-        <div ref={ref} className="relative inline-block">
+        <div ref={ref} className="relative flex">
             <button 
                 onClick={() => setOpen((o) => !o)} 
-                className="border border-neutral-200 rounded-2xl cursor-pointer"
+                className="border border-neutral-200 rounded-4xl cursor-pointer"
             >
-            <div className="m-0.5 w-7 h-7 rounded-full bg-gradient-to-bl from-[#fa5f69] to-[#4dffd8] ">
+            <div className="m-0.5 w-7.5 h-7.5 rounded-full bg-gradient-to-bl from-[#fa5f69] to-[#4dffd8] ">
                 <span className="sr-only">
                 User Menu
                 </span>
@@ -51,7 +51,7 @@ export default function User() {
             </button>
             {open && (
             <div
-                className="absolute right-0 mt-1 w-54 z-10 bg-white border border-neutral-200 rounded-md shadow-md p-1"
+                className="absolute right-0 mt-10 w-54 z-10 bg-white border border-neutral-200 rounded-md shadow-md p-1"
             >
                 <button className="w-full text-left px-2 py-3 text-sm text-gray-700 flex flex-col items-start border-b border-b-neutral-200">
                     <span className="text-xs text-gray-500">Logged in as</span>

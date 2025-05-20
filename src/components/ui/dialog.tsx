@@ -103,17 +103,16 @@ export function DialogContent({
   const { isOpen, closeDialog: originalCloseDialog } = useDialog();
   const contentRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
-  
+
   // Create a wrapper function that calls both the original closeDialog and the onClose prop
   const handleClose = () => {
     originalCloseDialog();
     if (onClose) onClose();
   };
-  
+
   // Handle client-side only rendering for portal
   useEffect(() => {
-    setIsMounted(true);
-    return () => setIsMounted(false);
+    setIsMounted(typeof window !== "undefined");
   }, []);
 
   // Escape key to close
@@ -131,13 +130,14 @@ export function DialogContent({
   // Update the places where closeDialog is called to use handleClose instead
   
   // In the gesture handler
-  useGesture(
+  // Setup gesture handling and bind to dialog content
+  const bindResult = useGesture(
     {
-      onDrag: ({ down, movement: [mx, my], velocity, direction: [dx, dy] }) => {
+      onDrag: ({ down, movement: [mx, my], velocity, direction: [, dy] }) => {
         if (!allowDrag || !contentRef.current) return;
-        
+
         const el = contentRef.current;
-        
+
         if (position === "center") {
           // For center position, allow movement in any direction
           if (down) {
@@ -154,7 +154,7 @@ export function DialogContent({
         } else if (position === "top" || position === "bottom") {
           // For top/bottom positions, only allow vertical movement
           const allowedDirection = position === "top" ? -1 : 1;
-          
+
           if (down && (dy * allowedDirection > 0)) {
             gsap.set(el, { y: my });
           } else if (!down) {
@@ -172,7 +172,12 @@ export function DialogContent({
         }
       },
     },
-    // ...rest of useGesture options
+    {
+      // Only enable drag if allowDrag is true
+      enabled: allowDrag,
+      target: contentRef,
+      eventOptions: { passive: false },
+    }
   );
 
   // Determine dialog position classes
@@ -182,6 +187,8 @@ export function DialogContent({
       : position === "top"
       ? "top-8 left-1/2 transform -translate-x-1/2"
       : "bottom-8 left-1/2 transform -translate-x-1/2";
+
+  if (!isMounted) return null;
 
   return createPortal(
     <div
@@ -214,14 +221,14 @@ export function DialogContent({
             &#x2715;
           </button>
         )}
-        
+
         {/* Rest of the component */}
         {children}
       </div>
     </div>,
     document.body
   );
-}
+} // <-- Close DialogContent function here
 
 // Also update the DialogClose component
 export function DialogClose({ children, className = "", onClose }: { children: React.ReactNode; className?: string; onClose?: () => void }) {

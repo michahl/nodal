@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/auth";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "motion/react";
+import User from "../dashboard/user";
 
 export default function UserAuthButton() {
   const { user, isLoading } = useAuth();
@@ -14,12 +15,15 @@ export default function UserAuthButton() {
   return (
     <>
       {user ? (
-        <Link
-          href="/dashboard"
-          className="text-sm text-center rounded-lg bg-neutral-200/70 w-[5.5rem] px-3 py-1 text-neutral-950 cursor-pointer block"
-        >
-          Dashboard
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/dashboard"
+            className="text-sm text-center rounded-lg bg-neutral-200/70 w-[5.5rem] px-3 py-1 text-neutral-950 cursor-pointer block"
+          >
+            Dashboard
+          </Link>
+          <User />
+        </div>
       ) : (
         <button
           disabled={isLoading}

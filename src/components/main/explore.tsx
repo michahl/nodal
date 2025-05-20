@@ -167,21 +167,48 @@ export default function Explore() {
 
     return (
         <>
-            <form className="flex items-center" onSubmit={handleSubmit}>
-                <input 
-                    type="text"
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    className="w-full border border-neutral-200 px-3 py-1.5 rounded-l-lg focus:outline-none"
-                    placeholder="eg. How money inflation works?"
-                />
-                <button 
-                    type="submit"
-                    className="cursor-pointer text-neutral-50 border border-neutral-800 bg-neutral-800 px-4 py-1.5 rounded-r-lg hover:bg-neutral-600 hover:border-neutral-600"
-                >
-                    Explore
-                </button>
-            </form>
+            <div className="w-full mx-auto max-w-xl">
+                <form className="flex justify-center items-center mb-1" onSubmit={handleSubmit}>
+                    <input 
+                        type="text"
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        className="w-full border border-neutral-200 px-3 py-1.5 rounded-l-lg focus:outline-none"
+                        placeholder="eg. How money inflation works?"
+                    />
+                    <button 
+                        type="submit"
+                        className="cursor-pointer text-neutral-50 border border-neutral-800 bg-neutral-800 px-4 py-1.5 rounded-r-lg hover:bg-neutral-600 hover:border-neutral-600"
+                    >
+                        Explore
+                    </button>
+                </form>
+            </div>
+            <div className="max-w-2xl mx-auto mt-10">
+                <p className="text-neutral-500 text-center mb-2">
+                    Don't know where to start? Try these examples:
+                </p>
+                <div className="w-full flex flex-wrap items-center justify-center gap-2">
+                    <button
+                        onClick={() => setQuestion("Why does inflation happen?")}
+                        className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 border border-neutral-200 rounded-full px-5 py-1"
+                    >
+                        💸 Why does inflation happen?
+                    </button>
+                    <button
+                        onClick={() => setQuestion("What is consciousness?")}
+                        className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 border border-neutral-200 rounded-full px-5 py-1"
+                    >
+                        🧠 What is consciousness?
+                    </button>
+                    <button
+                        onClick={() => setQuestion("How do black holes form?")}
+                        className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 border border-neutral-200 rounded-full px-5 py-1"
+                    >
+                        🌌 How do black holes form?
+                    </button>
+                </div>
+            </div>
 
             {/* Processing Dialog */}
             <DialogProviderWithRef ref={processingDialogRef}>
