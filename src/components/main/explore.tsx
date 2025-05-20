@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 import { Dialog, DialogContent, DialogDescription, DialogContext } from "../ui/dialog";
 import { useRouter } from "next/navigation";
@@ -41,6 +41,13 @@ export default function Explore() {
         }
     }, [showAuthDialog]);
 
+    useEffect(() => {
+        if (user) {
+            // Close auth dialog if user is authenticated
+            setShowAuthDialog(false);
+        }
+    }, [user]);
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!user) {
@@ -48,6 +55,7 @@ export default function Explore() {
             setShowAuthDialog(true);
             return;
         }
+
 
         if (question.length < 5) {
             toast.error("", {
