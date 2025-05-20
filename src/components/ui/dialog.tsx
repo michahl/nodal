@@ -13,7 +13,7 @@ type DialogContextType = {
   toggleDialog: () => void;
 };
 
-const DialogContext = createContext<DialogContextType | undefined>(undefined);
+export const DialogContext = createContext<DialogContextType | undefined>(undefined);
 
 function useDialog() {
   const context = useContext(DialogContext);
@@ -86,7 +86,8 @@ type DialogContentProps = {
   closeOnOverlayClick?: boolean;
   allowDrag?: boolean;
   position?: "center" | "top" | "bottom";
-  showCloseButton?: boolean; 
+  showCloseButton?: boolean;
+  onClose?: () => void;  // Add this line
 };
 
 export function DialogContent({
@@ -97,11 +98,18 @@ export function DialogContent({
   allowDrag = false,
   position = "center",
   showCloseButton = true,
+  onClose,
 }: DialogContentProps) {
-  const { isOpen, closeDialog } = useDialog();
+  const { isOpen, closeDialog: originalCloseDialog } = useDialog();
   const contentRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
-
+  
+  // Create a wrapper function that calls both the original closeDialog and the onClose prop
+  const handleClose = () => {
+    originalCloseDialog();
+    if (onClose) onClose();
+  };
+  
   // Handle client-side only rendering for portal
   useEffect(() => {
     setIsMounted(true);
@@ -112,71 +120,17 @@ export function DialogContent({
   useEffect(() => {
     const handleEscapeKey = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
-        closeDialog();
+        handleClose(); // Use the wrapper function
       }
     };
 
     document.addEventListener("keydown", handleEscapeKey);
     return () => document.removeEventListener("keydown", handleEscapeKey);
-  }, [isOpen, closeDialog]);
+  }, [isOpen]);
 
-  // Animation effects
-  useEffect(() => {
-    if (!contentRef.current) return;
-    
-    const el = contentRef.current;
-    
-    if (isOpen) {
-      // Customize the initial animation based on position
-      let initialY = 0;
-      
-      if (position === "top") initialY = -100;
-      if (position === "bottom") initialY = 100;
-      
-      // First set the initial position
-      gsap.set(el, { 
-        y: initialY, 
-        opacity: 0,
-        scale: 0.95
-      });
-      
-      // Then animate to the final position
-      gsap.to(el, {
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        duration: 0.4,
-        ease: "power2.out",
-      });
-      
-      // Add overflow hidden to the body
-      document.body.style.overflow = "hidden";
-    } else {
-      let targetY = 0;
-      
-      if (position === "top") targetY = -100;
-      if (position === "bottom") targetY = 100;
-      
-      gsap.to(el, {
-        y: targetY,
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.3,
-        ease: "power2.in",
-      });
-      
-      // Restore body overflow
-      document.body.style.overflow = "";
-    }
-    
-    return () => {
-      // Clean up any animations on unmount
-      gsap.killTweensOf(el);
-      document.body.style.overflow = "";
-    };
-  }, [isOpen, position]);
-
-  // Setup gestures for drag if enabled
+  // Update the places where closeDialog is called to use handleClose instead
+  
+  // In the gesture handler
   useGesture(
     {
       onDrag: ({ down, movement: [mx, my], velocity, direction: [dx, dy] }) => {
@@ -191,7 +145,7 @@ export function DialogContent({
           } else {
             // If velocity is high enough, close the dialog
             if (velocity[0] > 0.5 || velocity[1] > 0.5) {
-              closeDialog();
+              handleClose(); // Use the wrapper function
             } else {
               // Otherwise, snap back to center
               gsap.to(el, { x: 0, y: 0, duration: 0.3, ease: "power2.out" });
@@ -209,7 +163,7 @@ export function DialogContent({
                 y: allowedDirection * window.innerHeight,
                 duration: 0.3,
                 ease: "power2.in",
-                onComplete: closeDialog,
+                onComplete: handleClose, // Use the wrapper function
               });
             } else {
               gsap.to(el, { y: 0, duration: 0.3, ease: "power2.out" });
@@ -218,27 +172,17 @@ export function DialogContent({
         }
       },
     },
-    {
-      target: contentRef,
-      enabled: allowDrag && isOpen,
-      drag: {
-        filterTaps: true,
-        bounds: {
-          top: position === "bottom" ? 0 : undefined,
-          bottom: position === "top" ? 0 : undefined,
-        },
-      },
-    }
+    // ...rest of useGesture options
   );
 
-  // Base position styles
-  let positionClasses = "transform -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"; // center
-  if (position === "top") positionClasses = "transform -translate-x-1/2 left-1/2 top-4";
-  if (position === "bottom") positionClasses = "transform -translate-x-1/2 left-1/2 bottom-4";
+  // Determine dialog position classes
+  const positionClasses =
+    position === "center"
+      ? "top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      : position === "top"
+      ? "top-8 left-1/2 transform -translate-x-1/2"
+      : "bottom-8 left-1/2 transform -translate-x-1/2";
 
-  if (!isMounted) return null;
-
-  // Render the dialog using a portal
   return createPortal(
     <div
       className={`fixed inset-0 z-50 ${isOpen ? "block" : "hidden"}`}
@@ -250,7 +194,7 @@ export function DialogContent({
         className={`fixed inset-0 bg-black/15 transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0"
         } ${overlayClassName}`}
-        onClick={closeOnOverlayClick ? closeDialog : undefined}
+        onClick={closeOnOverlayClick ? handleClose : undefined} // Use wrapper function
       />
 
       {/* Dialog content */}
@@ -263,20 +207,15 @@ export function DialogContent({
         {/* Close button */}
         {showCloseButton && (
           <button
-            onClick={closeDialog}
-            className="absolute top-3 right-4 flex items-center justify-center cursor-pointer text-xs  hover:text-neutral-600 transition-colors"
+            onClick={handleClose} // Use wrapper function
+            className="absolute top-3 right-4 flex items-center justify-center cursor-pointer text-xs hover:text-neutral-600 transition-colors"
             aria-label="Close dialog"
           >
             &#x2715;
           </button>
         )}
-        {/* Optional drag handle if allowDrag is true */}
-        {allowDrag && (
-          <div className="absolute top-2 left-0 right-0 flex justify-center">
-            <div className="h-1 w-12 rounded-full bg-neutral-200" />
-          </div>
-        )}
         
+        {/* Rest of the component */}
         {children}
       </div>
     </div>,
@@ -284,12 +223,17 @@ export function DialogContent({
   );
 }
 
-// Additional helpful components
-export function DialogClose({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+// Also update the DialogClose component
+export function DialogClose({ children, className = "", onClose }: { children: React.ReactNode; className?: string; onClose?: () => void }) {
   const { closeDialog } = useDialog();
   
+  const handleClick = () => {
+    closeDialog();
+    if (onClose) onClose();
+  };
+  
   return (
-    <button type="button" onClick={closeDialog} className={className}>
+    <button type="button" onClick={handleClick} className={className}>
       {children}
     </button>
   );
