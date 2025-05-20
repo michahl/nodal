@@ -1,8 +1,10 @@
 "use client";
 
+import { useAuth } from "@/context/auth";
 import { useState } from "react";
 
 export default function Contact() {
+    const { user } = useAuth();
     const [formData, setFormData] = useState({
         subject: "",
         message: "",
@@ -12,12 +14,38 @@ export default function Contact() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-    
+
+        // Replace with your Discord webhook URL
+        const webhookUrl = process.env.NEXT_PUBLIC_DISCORD_WEBHOOK_URL || "";
+
+        // If you have user email, add it to formData or get it from context/auth
+        const userEmail = user?.email; // Set this to the user's email if available
+
+        const payload = {
+            content: `**New Contact Form Submission**\n**Subject:** ${formData.subject}\n**Message:** ${formData.message}\n**Email:** ${userEmail || "N/A"}`
+        };
+
+        try {
+            await fetch(webhookUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+            // Optionally reset form or show success message
+            setFormData({ subject: "", message: "" });
+        } catch (error) {
+            // Handle error (e.g., show error message)
+            console.error("Failed to send message to Discord:", error);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
         <div className="h-full w-full flex flex-col items-center justify-center">
-            <form className="mx-auto max-w-2xl w-full space-y-6">
+            <form className="mx-auto max-w-2xl w-full space-y-6" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-2">
                     <label 
                         htmlFor="Subject"
@@ -57,7 +85,7 @@ export default function Contact() {
                 <button 
                     type="submit" 
                     disabled={isLoading}
-                    className="w-full cursor-pointer bg-neutral-900 text-white rounded-md py-2 font-semibold hover:bg-neutral-800 transition"
+                    className="w-full cursor-pointer bg-neutral-900 text-white rounded-md py-2 font-semibold hover:bg-neutral-800 transition disabled:bg-neutral-500"
                 >
                     Send
                 </button>

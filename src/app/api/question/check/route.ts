@@ -16,6 +16,26 @@ export async function POST(request: Request) {
             );
         }
 
+        const { data: count, error: countError } = await supabase
+            .from("knowledge_maps")
+            .select('id', { count: "exact" })
+            .eq("user_id", user.id)
+
+        if (countError) {
+            return NextResponse.json(
+                { error: "Failed to fetch knowledge maps count" },
+                { status: 500 }
+            );
+        }
+
+        if ((count?.length || 0) >= 4) {
+            return NextResponse.json(
+                { error: "You have reached the maximum number of knowledge maps (4)" },
+                { status: 403 }
+            );
+        }
+
+
         const { userInput } = await request.json();
         if (!userInput) {
             return NextResponse.json(
