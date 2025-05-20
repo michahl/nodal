@@ -1,18 +1,40 @@
+import Explore from "@/components/dashboard/explore";
+import { Delete } from "@/components/ui/delete";
 import { createClient } from "@/utils/supabase/server";
 import { CommitIcon, DotFilledIcon, PlusIcon } from "@radix-ui/react-icons";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { motion } from "framer-motion";
+
+type Node = {
+  id: string;
+  data: {
+    label: string;
+    details: string;
+    sources: { url: string; name: string }[];
+    reasoning: string;
+    description: string;
+  };
+  type: string;
+  position: { x: number; y: number };
+};
+
+type Edge = {
+  id: string;
+  source: string;
+  target: string;
+  label?: string;
+};
 
 type Exploration = {
   id: string;
   title: string;
-  description: string;
   slug: string;
-  nodes: string;
-  edges: string;
-  created_at: Date;
-  user_id: string;
+  description: string;
+  created_at: string;
+  nodes: string | Node[]; // might be a string you need to parse
+  edges: string | Edge[];
 };
 
 export default async function Dashboard() {
@@ -44,26 +66,50 @@ export default async function Dashboard() {
         console.error("Error fetching explorations:", error);
     }
 
+    let parsedExplorations: Exploration[] = [];
+    if (explorations) {
+        parsedExplorations = explorations.map((exploration) => {
+            let nodes: Node[] = [];
+            let edges: Edge[] = [];
+
+            try {
+                nodes = typeof exploration.nodes === "string" ? JSON.parse(exploration.nodes) : exploration.nodes;
+            } catch (e) {
+                console.error("Failed to parse nodes", e);
+            }
+
+            try {
+                edges = typeof exploration.edges === "string" ? JSON.parse(exploration.edges) : exploration.edges;
+            } catch (e) {
+                console.error("Failed to parse edges", e);
+            }
+
+            return {
+                ...exploration,
+                nodes,
+                edges,
+            };
+        });
+    }
+    explorations = parsedExplorations;
+
     return (
         <div className="h-full flex flex-col">
             <div className="flex justify-end">
-                <button className="flex items-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 rounded px-4 py-1 cursor-pointer">
-                    <PlusIcon className="w-3.5 h-3.5" />
-                    <span className="text-sm">Explore</span>
-                </button>
+                <Explore />
             </div>
             {
                 explorations && explorations.length > 0 ? (
-                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
                         {explorations.map((exploration: Exploration) => (
                             <Link
                                 href={`/dashboard/explore/${exploration.slug}`}
                                 key={exploration.id} 
-                                className="border border-neutral-200 hover:bg-neutral-50 hover:shadow-sm rounded-lg px-4 py-4"
+                                className="group relative border border-neutral-200 hover:bg-neutral-50 hover:shadow-sm rounded-lg px-4 py-4 flex flex-col h-full"
                             >
                                 <h3 className="text-lg font-medium leading-5">{exploration.title}</h3>
                                 <p className="text-sm text-neutral-600 leading-4 my-3">{exploration.description}</p>
-                                <div className="w-full flex items-center justify-between">
+                                <div className="w-full flex items-center justify-between mt-auto">
                                     <span className="text-xs text-neutral-400">{new Date(exploration.created_at).toLocaleDateString("en-GB")}</span>
                                     <div className="text-xs flex items-center gap-2 text-neutral-400">
                                         <div className="flex items-center gap-1">

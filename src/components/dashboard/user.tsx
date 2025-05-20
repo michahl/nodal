@@ -43,7 +43,7 @@ export default function User() {
                 onClick={() => setOpen((o) => !o)} 
                 className="border border-neutral-200 rounded-2xl cursor-pointer"
             >
-            <div className="m-0.5 w-7 h-7 rounded-full bg-gradient-to-bl from-[#ffe4e6] to-[#ccfbf1] ">
+            <div className="m-0.5 w-7 h-7 rounded-full bg-gradient-to-bl from-[#fa5f69] to-[#4dffd8] ">
                 <span className="sr-only">
                 User Menu
                 </span>

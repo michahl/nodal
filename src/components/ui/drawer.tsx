@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useGesture } from "@use-gesture/react";
-import gsap from "gsap";
+import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 
 interface BottomDrawerProps {
     isOpen: boolean;
@@ -11,74 +11,94 @@ interface BottomDrawerProps {
 }
 
 export default function BottomDrawer({ isOpen, onClose, children }: BottomDrawerProps) {
-        const drawerRef = useRef<HTMLDivElement>(null);
+    const y = useMotionValue(0);
+    const drawerRef = useRef<HTMLDivElement>(null);
+    
+    // Reset position when drawer opens/closes
+    useEffect(() => {
+        if (isOpen) {
+            animate(y, 0, { 
+                duration: 0.6, 
+                ease: [0.16, 1, 0.3, 1] // expo.out equivalent
+            });
+        } else {
+            animate(y, window.innerHeight, { 
+                duration: 0.6, 
+                ease: [0.7, 0, 0.84, 0] // expo.in equivalent
+            });
+        }
+    }, [isOpen, y]);
 
-        useEffect(() => {
-                const onEsc = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-                document.addEventListener("keydown", onEsc);
-                return () => document.removeEventListener("keydown", onEsc);
-        }, [onClose]);
+    // Handle escape key
+    useEffect(() => {
+        const onEsc = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+        document.addEventListener("keydown", onEsc);
+        return () => document.removeEventListener("keydown", onEsc);
+    }, [onClose]);
 
-        useEffect(() => {
-                const el = drawerRef.current;
-                if (!el) return;
-
-                if (isOpen) {
-                        gsap.to(el, { y: 0, duration: 0.6, ease: "expo.out" });
+    // Configure gesture handling
+    useGesture(
+        {
+            onDrag: ({ down, movement: [, my], velocity: [, vy], direction: [, dy] }) => {
+                if (down) {
+                    // Only allow dragging downward
+                    y.set(Math.max(0, my));
                 } else {
-                        gsap.to(el, { y: "100%", duration: 0.6, ease: "expo.in" });
+                    if (vy > 0.3 && dy > 0) {
+                        // If flicked downward with enough velocity
+                        animate(y, window.innerHeight, { 
+                            duration: 0.5, 
+                            ease: [0.16, 1, 0.3, 1], // expo.out equivalent
+                            onComplete: onClose
+                        });
+                    } else {
+                        // Snap back to open position
+                        animate(y, 0, { 
+                            duration: 0.4, 
+                            ease: [0.16, 1, 0.3, 1] // expo.out equivalent
+                        });
+                    }
                 }
-        }, [isOpen]);
+            },
+        },
+        {
+            target: drawerRef,
+            drag: { axis: 'y' },
+        }
+    );
 
-        useGesture(
-                {
-                        onDrag: ({ down, movement: [, my], velocity, direction: [, dy] }) => {
-                                const el = drawerRef.current;
-                                if (!el) return;
+    // Calculate background opacity based on drawer position
+    const opacity = useTransform(
+        y, 
+        [0, window.innerHeight], 
+        [1, 0]
+    );
 
-                                if (down) {
-                                        gsap.set(el, { y: Math.max(my, 0) });
-                                } else {
-                                        if (velocity[1] > 0.3 && dy > 0) {
-                                                gsap.to(el, {
-                                                        y: '100%',
-                                                        duration: 0.5,
-                                                        ease: 'expo.out',
-                                                        onComplete: onClose,
-                                                });
-                                        } else {
-                                                gsap.to(el, { y: 0, duration: 0.4, ease: 'expo.out' });
-                                        }
-                                }
-                        },
-                },
-                {
-                        target: drawerRef,
-                        drag: { axis: 'y' },
-                }
-        );
+    return (
+        <>
+            {/* Backdrop */}
+            <motion.div
+                style={{ opacity }}
+                className={`fixed inset-0 bg-black/40 z-40 ${
+                    isOpen ? "" : "pointer-events-none"
+                }`}
+                onClick={onClose}
+            />
 
-        return (
-                <>
-                {/* Backdrop */}
-                <div
-                        className={`fixed inset-0 bg-black/40 z-40 transition-opacity ${
-                        isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-                        }`}
-                        onClick={onClose}
-                />
-
-                {/* Bottom Drawer */}
-                <div
-                        ref={drawerRef}
-                        style={{ willChange: "transform" }}
-                        className={`fixed bottom-0 left-0 right-0 z-50 max-h-[75vh] w-full bg-white rounded-t-2xl shadow-xl transition-transform duration-300 ease-in-out overflow-y-scroll scrollbar-hide ${
-                        isOpen ? "translate-y-0" : "translate-y-full"
-                        }`}
-                >
-                        <div className="mx-auto h-1.5 w-12 rounded-full bg-neutral-300 mt-4 mb-2" />
-                        <div className="px-4 pb-6">{children}</div>
-                </div>
-                </>
-        );
+            {/* Bottom Drawer */}
+            <motion.div
+                ref={drawerRef}
+                style={{ 
+                    y,
+                    willChange: "transform"
+                }}
+                className={`fixed bottom-0 left-0 right-0 z-50 max-h-[75vh] w-full bg-white rounded-t-2xl shadow-xl overflow-y-scroll scrollbar-hide ${
+                    isOpen ? "" : "pointer-events-none"
+                }`}
+            >
+                <div className="mx-auto h-1.5 w-12 rounded-full bg-neutral-300 mt-4 mb-2" />
+                <div className="px-4 pb-6">{children}</div>
+            </motion.div>
+        </>
+    );
 }

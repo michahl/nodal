@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Controls, ReactFlow, useReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import Link from 'next/link';
@@ -33,12 +33,24 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
     ? JSON.parse(initialData.edges || '[]')
     : (initialData.edges || []);
   
-  // Rest of your code remains the same
-  const [selectedNode, setSelectedNode] = useState<NodeData | null>(
-    initialNodes.length > 0 ? initialNodes[0].data : null
-  );
+  // 1. Set selectedNode to null initially
+  const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
+  
+  // 2. Keep drawer closed by default
   const [openDrawer, setOpenDrawer] = useState(false);
+  
+  // 3. Add a reference to track initial render
+  const isInitialRender = useRef(true);
+  
+  // 4. Set the initial selected node after mount, but don't open drawer
+  useEffect(() => {
+    if (isInitialRender.current && initialNodes.length > 0) {
+      setSelectedNode(initialNodes[0].data);
+      isInitialRender.current = false;
+    }
+  }, [initialNodes]);
 
+  // 5. Only open drawer when a node is explicitly clicked
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: FlowNode) => {
       setSelectedNode(node.data);
@@ -108,8 +120,8 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
                     </div>
                     <div className="flex justify-end items-center gap-1 mt-5">
                     <button
-                        disabled={selectedNode.description === initialNodes[0].data.description}
-                        className={`text-sm ${selectedNode.description === initialNodes[0].data.description ? 'bg-neutral-600/50' : 'bg-neutral-800 hover:bg-neutral-600 cursor-pointer'} text-neutral-50 rounded-md px-4 py-1`}
+                        disabled={initialNodes[0].data.description === selectedNode.description}
+                        className={`text-sm ${initialNodes[0].data.description === selectedNode.description ? 'bg-neutral-600/50' : 'bg-neutral-800 hover:bg-neutral-600 cursor-pointer'} text-neutral-50 rounded-md px-4 py-1`}
                     >
                         Continue exploring this path
                     </button>
@@ -122,7 +134,7 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
             {/* Mobile: Show Drawer */}
             <div className='flex md:hidden'>
                 <Drawer
-                    isOpen={openDrawer}
+                    isOpen={selectedNode !== null && openDrawer}
                     onClose={() => setOpenDrawer(false)}
                 >
                 {selectedNode && (

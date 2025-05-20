@@ -28,10 +28,21 @@ export async function POST(request: Request) {
             {
                 role: 'system',
                 content: `
-                    You are an AI assistant that evaluates whether a user input is a valid, well-formed question.
-                    Return only \`true\` or \`false\`. Do not explain.
-                    A valid question should be clear, interrogative, and related to factual or scientific topics.
-                    `.trim(),
+                You are an AI assistant that evaluates whether a user input is a valid question.
+                
+                VALID QUESTIONS:
+                - Start with question words like who, what, where, when, why, how
+                - Seek information or explanation
+                - Clear and specific
+                - Examples: "What is the big bang?", "How do computers work?", "Why is the sky blue?"
+                
+                INVALID INPUTS:
+                - Single words without context: "banana", "sky", "technology"
+                - Statements that don't ask for information: "The earth is round"
+                - Gibberish or nonsensical strings: "asdfjkl"
+                
+                Respond ONLY with "VALID" if it's a valid question or "INVALID" if it's not.
+                `.trim(),
             },
             {
                 role: 'user',
@@ -48,23 +59,32 @@ export async function POST(request: Request) {
                 },
                 body: JSON.stringify({
                     messages: sonarMessage,
-                    model: "sonar"
+                    model: "sonar",
+                    temperature: 0,
+                    max_tokens: 5,
                 })
             });
 
-            const data = await res.json();
-
-            const answer = data?.choices?.[0]?.message?.content?.trim().toLowerCase();
-            const isValid = answer === "true";
-
-            if (typeof isValid !== "boolean") {
-            return NextResponse.json(
-                { error: "Unexpected response format from Perplexity API" },
-                { status: 502 }
-            );
+            if (!res.ok) {
+                const errorData = await res.json();
+                console.error("Perplexity API error:", errorData);
+                return NextResponse.json(
+                    { error: `Perplexity API error: ${res.status}` },
+                    { status: res.status }
+                );
             }
 
-            return NextResponse.json({ isValid, message: "Success" });
+            const data = await res.json();
+
+            const answer = data?.choices?.[0]?.message?.content?.trim()?.toUpperCase() || "";
+            
+            const isValid = answer.includes("VALID");
+
+            return NextResponse.json({ 
+                isValid, 
+                message: "Success",
+                debug: { answer }
+            });
         } catch (e) {
             return NextResponse.json(
                 { error: "Failed to fetch from Perplexity API" },
