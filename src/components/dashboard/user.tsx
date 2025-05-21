@@ -3,27 +3,27 @@
 import { useAuth } from "@/context/auth";
 import { ChatBubbleIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect } from "react";
 
 export default function User() {
+    const router = useRouter();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
     const { user, signOut } = useAuth(); 
 
     const handleSignOut = async () => {
-        setOpen(false);
-
-        setTimeout(async () => {
-            try {
-                await signOut();
-                redirect("/");
-            } catch (e) {
-                console.error("Error signing out:", e);
-            }
-        }, 0);
+    setOpen(false);
+    
+    try {
+        await signOut();
+        router.push('/');
+        router.refresh();
+    } catch (e) {
+        console.error("Error signing out:", e);
     }
+    };
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {

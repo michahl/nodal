@@ -181,35 +181,39 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
                         </Link>
                     ))}
                     </div>
-                    <div className="flex justify-between items-center gap-1 mt-5">
-                      <DeleteNodeButton
-                        nodeId={selectedNode.id}
-                        explorationSlug={initialData.slug}
-                        isRootNode={selectedNode.id === initialNodes[0]?.id}
-                        onDeleteSuccess={handleNodeDeleted}
-                        className="mr-2"
-                      />
-                      <button
-                        disabled={initialNodes[0].data.description === selectedNode.description}
-                        onClick={() => handleExpandNode(selectedNode.id, selectedNode)}
-                        className={`text-sm ${
-                          initialNodes[0].data.description === selectedNode.description 
-                            ? 'bg-neutral-600/50' 
-                            : expandingNodeId === selectedNode.id
-                              ? 'bg-neutral-700 cursor-wait'
-                              : 'bg-neutral-800 hover:bg-neutral-600 cursor-pointer'
-                        } text-neutral-50 rounded-md px-4 py-1 flex items-center justify-center`}
-                      >
-                        {expandingNodeId === selectedNode.id ? (
-                          <>
-                            <div className="animate-spin w-3.5 h-3.5 border-2 border-neutral-300 border-t-transparent rounded-full mr-2"></div>
-                            Generating...
-                          </>
-                        ) : (
-                          "Continue exploring this path"
-                        )}
-                      </button>
-                    </div>
+                    {
+                      !(initialNodes[0].data.description === selectedNode.description) && (
+                        <div className="flex justify-between items-center gap-1 mt-5">
+                          <DeleteNodeButton
+                            nodeId={selectedNode.id}
+                            explorationSlug={initialData.slug}
+                            isRootNode={selectedNode.id === initialNodes[0]?.id}
+                            onDeleteSuccess={handleNodeDeleted}
+                            className="mr-2"
+                          />
+                          <button
+                            onClick={() => handleExpandNode(selectedNode.id, selectedNode)}
+                            className={`text-sm ${
+                              initialNodes[0].data.description === selectedNode.description 
+                                ? 'bg-neutral-600/50' 
+                                : expandingNodeId === selectedNode.id
+                                  ? 'bg-neutral-700 cursor-wait'
+                                  : 'bg-neutral-800 hover:bg-neutral-600 cursor-pointer'
+                            } text-neutral-50 rounded-md px-4 py-1 flex items-center justify-center`}
+                          >
+                            {expandingNodeId === selectedNode.id ? (
+                              <>
+                                <div className="animate-spin w-3.5 h-3.5 border-2 border-neutral-300 border-t-transparent rounded-full mr-2"></div>
+                                Generating...
+                              </>
+                            ) : (
+                              "Continue exploring this path"
+                            )}
+                          </button>
+                        </div>
+                      )
+                    }
+                
                 </>
                 ) : (
                 <p className="text-sm text-neutral-500">Click on a node to see its details.</p>
@@ -251,35 +255,38 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
                         </Link>
                         ))}
                     </div>
-                    <div className="flex justify-between items-center gap-1 mt-5">
-                      <DeleteNodeButton
-                        nodeId={selectedNode.id}
-                        explorationSlug={initialData.slug}
-                        isRootNode={selectedNode.id === initialNodes[0]?.id}
-                        onDeleteSuccess={handleNodeDeleted}
-                        className="mr-2"
-                      />
-                      <button
-                        disabled={initialNodes[0].data.description === selectedNode.description}
-                        onClick={() => handleExpandNode(selectedNode.id, selectedNode)}
-                        className={`text-sm ${
-                          initialNodes[0].data.description === selectedNode.description 
-                            ? 'bg-neutral-600/50' 
-                            : expandingNodeId === selectedNode.id
-                              ? 'bg-neutral-700 cursor-wait'
-                              : 'bg-neutral-800 hover:bg-neutral-600 cursor-pointer'
-                        } text-neutral-50 rounded-md px-4 py-1 flex items-center justify-center`}
-                      >
-                        {expandingNodeId === selectedNode.id ? (
-                          <>
-                            <div className="animate-spin w-3.5 h-3.5 border-2 border-neutral-300 border-t-transparent rounded-full mr-2"></div>
-                            Generating...
-                          </>
-                        ) : (
-                          "Continue exploring this path"
-                        )}
-                      </button>
-                    </div>
+                    {
+                      !(initialNodes[0].data.description === selectedNode.description) && (
+                        <div className="flex justify-between items-center gap-1 mt-5">
+                          <DeleteNodeButton
+                            nodeId={selectedNode.id}
+                            explorationSlug={initialData.slug}
+                            isRootNode={selectedNode.id === initialNodes[0]?.id}
+                            onDeleteSuccess={handleNodeDeleted}
+                            className="mr-2"
+                          />
+                          <button
+                            onClick={() => handleExpandNode(selectedNode.id, selectedNode)}
+                            className={`text-sm ${
+                              initialNodes[0].data.description === selectedNode.description 
+                                ? 'bg-neutral-600/50' 
+                                : expandingNodeId === selectedNode.id
+                                  ? 'bg-neutral-700 cursor-wait'
+                                  : 'bg-neutral-800 hover:bg-neutral-600 cursor-pointer'
+                            } text-neutral-50 rounded-md px-4 py-1 flex items-center justify-center`}
+                          >
+                            {expandingNodeId === selectedNode.id ? (
+                              <>
+                                <div className="animate-spin w-3.5 h-3.5 border-2 border-neutral-300 border-t-transparent rounded-full mr-2"></div>
+                                Generating...
+                              </>
+                            ) : (
+                              "Continue exploring this path"
+                            )}
+                          </button>
+                        </div>
+                      )
+                    }
                     </div>
                 )}
                 </Drawer>

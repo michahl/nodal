@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { CheckIcon, Cross2Icon, MagicWandIcon } from "@radix-ui/react-icons";
 import { DialogContent, DialogDescription, DialogContext } from "../ui/dialog";
 import { useRouter } from "next/navigation";
@@ -38,7 +38,8 @@ export default function Explore() {
     const [question, setQuestion] = useState("");
     const [showAuthDialog, setShowAuthDialog] = useState(false);
     const [example, setExamples] = useState<string[]>([]);
-    
+    const [authSucceeded, setAuthSucceeded] = useState(false);
+
     useEffect(() => {
         setExamples(
             examples
@@ -48,7 +49,6 @@ export default function Explore() {
         );
     }, []);
     
-    // Create refs to store dialog methods
     const processingDialogRef = useRef<{openDialog?: () => void; closeDialog?: () => void}>({});
     const authDialogRef = useRef<{openDialog?: () => void; closeDialog?: () => void}>({});
     
@@ -73,23 +73,8 @@ export default function Explore() {
             authDialogRef.current.closeDialog?.();
         }
     }, [showAuthDialog]);
-
-    useEffect(() => {
-        if (user) {
-            // Close auth dialog if user is authenticated
-            setShowAuthDialog(false);
-        }
-    }, [user]);
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!user) {
-            // Show auth dialog instead of toast
-            setShowAuthDialog(true);
-            return;
-        }
-
-
+    
+    const handleFormSubmission = useCallback(async () => {
         if (question.length < 5) {
             toast.error("", {
                 description: "Please enter a valid question",
@@ -191,25 +176,51 @@ export default function Explore() {
             setStep(0);
             return;
         }
+
+    }, [question, router]);
+
+    useEffect(() => {
+        if (user && authSucceeded) {
+            setAuthSucceeded(false);
+            setShowAuthDialog(false);
+            
+            setTimeout(() => {
+                if (question.length >= 5) {
+                    handleFormSubmission();
+                }
+            }, 300);
+        }
+    }, [user, authSucceeded, question, handleFormSubmission]);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!user) {
+            // Show auth dialog instead of toast
+            setShowAuthDialog(true);
+            return;
+        }
+
+
+        await handleFormSubmission();
     };
 
-    // Handle successful authentication
-    const handleAuthSuccess = () => {
-        setShowAuthDialog(false);
-        
-        // Wait for the dialog to close
-        setTimeout(() => {
-            if (question.length >= 5) {
-                // Create a synthetic form event
-                const syntheticEvent = {
-                    preventDefault: () => {},
-                } as React.FormEvent<HTMLFormElement>;
-                
-                // Submit the form
-                handleSubmit(syntheticEvent);
-            }
-        }, 300);
-    };
+    const handleAuthSuccess = useCallback(() => {
+        setAuthSucceeded(true);
+    }, []);
+    
+    useEffect(() => {
+        if (showAuthDialog) {
+            setTimeout(() => authDialogRef.current.openDialog?.(), 10);
+        } else {
+            authDialogRef.current.closeDialog?.();
+        }
+    }, [showAuthDialog]);
+    
+    useEffect(() => {
+        if (user && showAuthDialog) {
+            setShowAuthDialog(false);
+        }
+    }, [user, showAuthDialog]);
 
     return (
         <>

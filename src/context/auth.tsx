@@ -9,8 +9,9 @@ type AuthContextType = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
+  isSessionExpired: boolean;
   signOut: () => Promise<void>;
-  refreshSession: () => Promise<void>;
+  refreshSession: () => Promise<boolean>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,39 +20,80 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSessionExpired, setIsSessionExpired] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
-  const refreshSession = async () => {
+  const refreshSession = async (): Promise<boolean> => {
     try {
-      const { data } = await supabase.auth.getSession();
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        setIsSessionExpired(true);
+        setSession(null);
+        setUser(null);
+        setIsLoading(false);
+        return false;
+      }
+      if (!data.session) {
+        setIsSessionExpired(false);
+        setSession(null);
+        setUser(null);
+        setIsLoading(false);
+        return false;
+      }
       setSession(data.session);
-      setUser(data.session?.user ?? null);
-    } catch (error) {
-      console.error("Error refreshing session:", error);
-    } finally {
+      setUser(data.session.user);
+      setIsSessionExpired(false);
       setIsLoading(false);
+      return true;
+    } catch (error) {
+      setIsSessionExpired(true);
+      setIsLoading(false);
+      return false;
     }
   };
 
   useEffect(() => {
-    refreshSession();
+    const initAuth = async () => {
+      setIsLoading(true);
+      await refreshSession();
+    };
+    initAuth();
+    const intervalId = setInterval(() => {
+      refreshSession();
+    }, 5 * 60 * 1000);
+    return () => clearInterval(intervalId);
+  }, []);
 
+  useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
+      async (event, newSession) => {
+        switch (event) {
+          case 'SIGNED_IN':
+            setSession(newSession);
+            setUser(newSession?.user ?? null);
+            setIsSessionExpired(false);
+            router.refresh();
+            break;
+          case 'SIGNED_OUT':
+            setSession(null);
+            setUser(null);
+            setIsSessionExpired(false);
+            router.refresh();
+            break;
+          case 'TOKEN_REFRESHED':
+            setSession(newSession);
+            setUser(newSession?.user ?? null);
+            setIsSessionExpired(false);
+            break;
+          case 'USER_UPDATED':
+            setSession(newSession);
+            setUser(newSession?.user ?? null);
+            break;
+        }
         setIsLoading(false);
-        
-        if (event === 'SIGNED_IN') {
-          router.refresh();
-        }
-        if (event === 'SIGNED_OUT') {
-          router.refresh();
-        }
       }
     );
-
     return () => {
       authListener.subscription.unsubscribe();
     };
@@ -59,23 +101,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Error signing out:", error.message);
+      const sessionResult = await refreshSession();
+      if (!sessionResult) {
+        setUser(null);
+        setSession(null);
+        setIsSessionExpired(false);
+        router.refresh();
         return;
       }
-      // Force clear state
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        setUser(null);
+        setSession(null);
+        router.refresh();
+        return;
+      }
       setUser(null);
       setSession(null);
+      setIsSessionExpired(false);
     } catch (error) {
-      console.error("Unexpected error during sign out:", error);
+      setUser(null);
+      setSession(null);
+      router.refresh();
     }
   };
+
+  useEffect(() => {
+    if (isSessionExpired && !isLoading) {
+      signOut();
+    }
+  }, [isSessionExpired, isLoading]);
 
   const value = {
     user,
     session,
     isLoading,
+    isSessionExpired,
     signOut,
     refreshSession,
   };
