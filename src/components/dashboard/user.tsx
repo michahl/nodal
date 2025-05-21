@@ -14,15 +14,14 @@ export default function User() {
     const { user, signOut } = useAuth(); 
 
     const handleSignOut = async () => {
-    setOpen(false);
-    
-    try {
-        await signOut();
-        router.push('/');
-        router.refresh();
-    } catch (e) {
-        console.error("Error signing out:", e);
-    }
+        setOpen(false);
+        
+        try {
+            await signOut();
+            router.push('/');
+        } catch (e) {
+            console.error("Error signing out:", e);
+        }
     };
 
     useEffect(() => {
