@@ -150,7 +150,7 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
         </div>
 
         {/* Desktop/Tablet: Show details panel */}
-        <div className="max-w-sm lg:max-w-md col-span-4 lg:col-span-3 h-full border-l border-neutral-200 pl-6 overflow-y-scroll scrollbar-hide hidden md:block">
+        <div className="max-w-md col-span-4 lg:col-span-3 h-full border-l border-neutral-200 pl-6 overflow-y-scroll scrollbar-hide hidden md:block">
                 {selectedNode ? (
                 <>
                     <h2 className="text-xl font-medium leading-6">{selectedNode.label}</h2>

@@ -7,6 +7,8 @@ body {
 .scrollbar-hide {
   scrollbar-width: none;
   -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+  -webkit-overflow-scrolling: touch;
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;

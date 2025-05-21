@@ -1,0 +1,65 @@
+{
+  "name": "nodal - ai-powered knowledge maps",
+  "short_name": "nodal",
+  "description": "Visualize questions as expandable knowledge graphs using Sonar, with summaries, explanations, reasoning, and source links in each node.",
+  "start_url": "/",
+  "id": "/",
+  "icons": [
+    {
+      "src": "/assets/favicon/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/favicon/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/favicon/maskable-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "lang": "en-US",
+  "dir": "ltr",
+  "categories": ["productivity", "education", "visualization", "research"],
+  "screenshots": [
+    {
+      "src": "/assets/screenshots/desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/assets/screenshots/mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Knowledge Graph",
+      "short_name": "New Graph",
+      "description": "Create a new knowledge graph",
+      "url": "/dashboard",
+      "icons": [{"src": "/assets/favicon/shortcut-new.png", "sizes": "96x96"}]
+    },
+    {
+      "name": "My Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your knowledge graphs",
+      "url": "/dashboard",
+      "icons": [{"src": "/assets/favicon/shortcut-dashboard.png", "sizes": "96x96"}]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "scope": "/"
+}
