@@ -8,6 +8,7 @@ import { CheckIcon, Cross2Icon, ExternalLinkIcon } from '@radix-ui/react-icons';
 import Drawer from '@/components/ui/drawer';
 import type { Node as FlowNode } from '@xyflow/react';
 import { toast } from '../ui/sonar';
+import DeleteNodeButton from './delete';
 
 type NodeData = {
   label?: string;
@@ -105,6 +106,21 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
         });
       }
   }, [initialData.slug]);
+
+  const handleNodeDeleted = useCallback((deletedNodes: string[], deletedEdges: string[]) => {
+    setInitialNodes((prevNodes: any[]) => 
+      prevNodes.filter((node) => !deletedNodes.includes(node.id))
+    );
+    
+    setInitialEdges((prevEdges: any[]) => 
+      prevEdges.filter((edge) => !deletedEdges.includes(edge.id))
+    );
+
+    if (selectedNode && deletedNodes.includes(selectedNode.id)) {
+      setOpenDrawer(false);
+      setSelectedNode(null);
+    }
+  }, [selectedNode]);
   
   return (
     <div className="h-full w-full flex flex-col">
@@ -165,7 +181,14 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
                         </Link>
                     ))}
                     </div>
-                    <div className="flex justify-end items-center gap-1 mt-5">
+                    <div className="flex justify-between items-center gap-1 mt-5">
+                      <DeleteNodeButton
+                        nodeId={selectedNode.id}
+                        explorationSlug={initialData.slug}
+                        isRootNode={selectedNode.id === initialNodes[0]?.id}
+                        onDeleteSuccess={handleNodeDeleted}
+                        className="mr-2"
+                      />
                       <button
                         disabled={initialNodes[0].data.description === selectedNode.description}
                         onClick={() => handleExpandNode(selectedNode.id, selectedNode)}
@@ -228,7 +251,14 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
                         </Link>
                         ))}
                     </div>
-                    <div className="flex justify-end items-center gap-1 mt-5">
+                    <div className="flex justify-between items-center gap-1 mt-5">
+                      <DeleteNodeButton
+                        nodeId={selectedNode.id}
+                        explorationSlug={initialData.slug}
+                        isRootNode={selectedNode.id === initialNodes[0]?.id}
+                        onDeleteSuccess={handleNodeDeleted}
+                        className="mr-2"
+                      />
                       <button
                         disabled={initialNodes[0].data.description === selectedNode.description}
                         onClick={() => handleExpandNode(selectedNode.id, selectedNode)}

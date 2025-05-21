@@ -7,7 +7,35 @@ import { useRouter } from "next/navigation";
 import { toast } from "../ui/sonar";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/auth";
-import SignIn from "@/components/auth/signin"; // Import the SignIn component
+import SignIn from "@/components/auth/signin"; 
+
+const examples = [
+    "💸 Why does inflation happen?",
+    "🧠 What is consciousness?",
+    "🌌 How do black holes form?",
+    "🤔 What is the meaning of life?",
+    "🌐 How does the internet work?",
+    "🧲 What is the theory of relativity?",
+    "💉 How do vaccines work?",
+    "⏳ What is the nature of time?",
+    "🔭 How do we know the universe is expanding?",
+    "🧬 What is the origin of life?",
+    "🌍 How do we know the Earth is round?",
+    "🌀 What is the nature of reality?",
+    "⚡ How do we know the speed of light is constant?",
+    "🧘 What is the nature of consciousness?",
+    "🌌 What is the nature of space?",
+    "🔢 How do we know the universe is finite?",
+    "🪐 What is the nature of matter?",
+    "🌠 How do we know the universe is homogeneous?",
+    "🔥 What is the nature of energy?",
+    "🔄 How do we know the universe is isotropic?",
+    "🌑 What is the nature of gravity?",
+    "🚀 How do we know the universe is accelerating?",
+    "🌑 What is the nature of dark matter?",
+    "📏 How do we know the universe is flat?",
+    "🌑 What is the nature of dark energy?",
+];
 
 export default function Explore() {
     const router = useRouter();
@@ -197,24 +225,21 @@ export default function Explore() {
                     Don't know where to start? Try these examples:
                 </p>
                 <div className="w-full flex flex-wrap items-center justify-center gap-2">
-                    <button
-                        onClick={() => setQuestion("Why does inflation happen?")}
-                        className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 border border-neutral-200 rounded-full px-5 py-1"
-                    >
-                        💸 Why does inflation happen?
-                    </button>
-                    <button
-                        onClick={() => setQuestion("What is consciousness?")}
-                        className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 border border-neutral-200 rounded-full px-5 py-1"
-                    >
-                        🧠 What is consciousness?
-                    </button>
-                    <button
-                        onClick={() => setQuestion("How do black holes form?")}
-                        className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 border border-neutral-200 rounded-full px-5 py-1"
-                    >
-                        🌌 How do black holes form?
-                    </button>
+                    {
+                        examples
+                            .slice(0)
+                            .sort(() => 0.5 - Math.random())
+                            .slice(0, 3)
+                            .map((example, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setQuestion(example.slice(2))}
+                                    className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 border border-neutral-200 rounded-full px-5 py-1"
+                                >
+                                    {example}
+                                </button>
+                            ))
+                    }
                 </div>
             </div>
 
