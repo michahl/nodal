@@ -1,7 +1,7 @@
 import DeleteExploration from "@/components/dashboard/delete";
 import Explore from "@/components/dashboard/explore";
 import { createClient } from "@/utils/supabase/server";
-import { CommitIcon, DotFilledIcon } from "@radix-ui/react-icons";
+import { CommitIcon, DotFilledIcon, OpenInNewWindowIcon } from "@radix-ui/react-icons";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -103,17 +103,17 @@ export default async function Dashboard() {
                         {explorations.map((exploration: Exploration) => (
                             <div
                                 key={exploration.id} 
-                                className="group relative border border-neutral-200 hover:bg-neutral-50 hover:shadow-sm rounded-lg px-4 py-4 flex flex-col h-full"
+                                className="group relative border border-neutral-200 hover:bg-neutral-50 hover:shadow-sm rounded-lg pl-4 py-4 flex flex-row lg:flex-col h-full"
                             >
                                 {/* Delete button outside the Link */}
-                                <div className="absolute top-0 right-0 p-2 hidden group-hover:flex">
+                                <div className="absolute top-0 right-0 p-2 hidden lg:group-hover:flex">
                                     <DeleteExploration explorationId={exploration.slug} />
                                 </div>
                                 
                                 {/* Link wraps only the content */}
                                 <Link
                                     href={`/dashboard/explore/${exploration.slug}`}
-                                    className="flex flex-col flex-grow"
+                                    className="flex flex-col flex-grow pr-2"
                                 >
                                     <h3 className="text-lg font-medium leading-5">{exploration.title}</h3>
                                     <p className="text-sm text-neutral-600 leading-4 my-3">{exploration.description}</p>
@@ -131,6 +131,19 @@ export default async function Dashboard() {
                                         </div>
                                     </div>
                                 </Link>
+                                <div className="flex lg:hidden flex-col items-center justify-around pl-2 pr-1 border-l border-neutral-200 h-full">
+                                    <DeleteExploration explorationId={exploration.slug} />
+                                    <div
+                                        className="mx-1 w-full border-t border-neutral-200"
+                                    />
+                                    <Link
+                                        href={`/dashboard/explore/${exploration.slug}`}
+                                        className="border-neutral-200 text-neutral-400 hover:text-neutral-600 transition-colors duration-200 ease-in-out"
+                                        target="_blank"
+                                    >
+                                        <OpenInNewWindowIcon className="w-5 h-5" />
+                                    </Link>
+                                </div>
                             </div>
                         ))}
                     </div>
