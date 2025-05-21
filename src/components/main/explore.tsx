@@ -37,11 +37,16 @@ export default function Explore() {
     const [step, setStep] = useState(0);
     const [question, setQuestion] = useState("");
     const [showAuthDialog, setShowAuthDialog] = useState(false);
-    const [example, setExamples] = useState(examples
-        .slice(0)
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 3)
-    );
+    const [example, setExamples] = useState<string[]>([]);
+    
+    useEffect(() => {
+        setExamples(
+            examples
+                .slice(0)
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 3)
+        );
+    }, []);
     
     // Create refs to store dialog methods
     const processingDialogRef = useRef<{openDialog?: () => void; closeDialog?: () => void}>({});
@@ -192,11 +197,16 @@ export default function Explore() {
     const handleAuthSuccess = () => {
         setShowAuthDialog(false);
         
-        // Slight delay to allow dialog to close before proceeding
+        // Wait for the dialog to close
         setTimeout(() => {
             if (question.length >= 5) {
-                // Auto-submit the form after successful authentication
-                handleSubmit({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>);
+                // Create a synthetic form event
+                const syntheticEvent = {
+                    preventDefault: () => {},
+                } as React.FormEvent<HTMLFormElement>;
+                
+                // Submit the form
+                handleSubmit(syntheticEvent);
             }
         }, 300);
     };

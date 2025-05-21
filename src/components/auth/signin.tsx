@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { CheckIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { CheckIcon } from "@radix-ui/react-icons";
 import { toast } from "../ui/sonar";
 import { motion } from "framer-motion";
 
@@ -127,7 +127,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                 login ? (
                     <div className="mt-3">
                         <label 
-                            htmlFor="email"
+                            htmlFor="email-login"
                             className="block px-1 text-sm font-medium text-neutral-700"
                         >
                             Enter your email
@@ -135,7 +135,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                         <input 
                             required
                             type="email" 
-                            id="email"
+                            id="email-login"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="x@example.com"
@@ -143,7 +143,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                         />
 
                         <label 
-                            htmlFor="password"
+                            htmlFor="password-login"
                             className="block px-1 text-sm font-medium text-neutral-700 mt-2"
                         >
                             Enter your password
@@ -151,7 +151,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                         <input 
                             required
                             type="password" 
-                            id="password"
+                            id="password-login"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="********"
@@ -180,7 +180,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                 ) : (
                     <div className="mt-3">
                         <label 
-                            htmlFor="email"
+                            htmlFor="email-signup"
                             className="block px-1 text-sm font-medium text-neutral-700"
                         >
                             Enter your email
@@ -188,7 +188,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                         <input 
                             required
                             type="email" 
-                            id="email"
+                            id="email-signup"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="x@example.com"
@@ -196,7 +196,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                         />
 
                         <label 
-                            htmlFor="password"
+                            htmlFor="password-signup"
                             className="block px-1 text-sm font-medium text-neutral-700 mt-2"
                         >
                             Enter your password
@@ -204,7 +204,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                         <input 
                             required
                             type="password" 
-                            id="password"
+                            id="password-signup"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="********"

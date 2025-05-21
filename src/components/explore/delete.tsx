@@ -86,7 +86,7 @@ export default function DeleteNodeButton({
                 disabled={isDeleting}
                 aria-label="Delete node"
                 className={`cursor-pointer transition-colors duration-200 ease-in-out
-                    text-sm flex items-center justify-center gap-2 px-2 py-1 bg-red-500/20 hover:bg-red-500/40 border-red-600/20 text-red-700/50 hover:text-red-400 rounded-md
+                    text-sm flex items-center justify-center gap-2 px-2 py-1  text-red-700/50 hover:text-red-400 rounded-md
                 `}
             >
                 <TrashIcon className="h-5 w-5" />
