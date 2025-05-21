@@ -9,6 +9,7 @@ import { toast } from "../ui/sonar";
 
 export default function Explore() {
     const router = useRouter();
+    
     const [step, setStep] = useState(0);
     const [question, setQuestion] = useState("");
     const [error, setError] = useState("");

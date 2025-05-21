@@ -4,9 +4,10 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Controls, ReactFlow, useReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import Link from 'next/link';
-import { ExternalLinkIcon } from '@radix-ui/react-icons';
+import { CheckIcon, Cross2Icon, ExternalLinkIcon } from '@radix-ui/react-icons';
 import Drawer from '@/components/ui/drawer';
 import type { Node as FlowNode } from '@xyflow/react';
+import { toast } from '../ui/sonar';
 
 type NodeData = {
   label?: string;
@@ -21,28 +22,18 @@ type ExplorationData = {
   edges: string; 
   user_id: string;
   created_at: string;
+  slug: string;
 };
 
 export default function ExploreClient({ initialData }: { initialData: ExplorationData }) {
   // Parse nodes and edges from JSON strings
-  const initialNodes = typeof initialData.nodes === 'string' 
-    ? JSON.parse(initialData.nodes || '[]') 
-    : (initialData.nodes || []);
-  
-  const initialEdges = typeof initialData.edges === 'string'
-    ? JSON.parse(initialData.edges || '[]')
-    : (initialData.edges || []);
-  
-  // 1. Set selectedNode to null initially
+  const [initialNodes, setInitialNodes] = useState(JSON.parse(initialData.nodes || '[]'));
+  const [initialEdges, setInitialEdges] = useState(JSON.parse(initialData.edges || '[]'));
+  const [expandingNodeId, setExpandingNodeId] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
-  
-  // 2. Keep drawer closed by default
   const [openDrawer, setOpenDrawer] = useState(false);
-  
-  // 3. Add a reference to track initial render
   const isInitialRender = useRef(true);
   
-  // 4. Set the initial selected node after mount, but don't open drawer
   useEffect(() => {
     if (isInitialRender.current && initialNodes.length > 0) {
       setSelectedNode(initialNodes[0].data);
@@ -50,14 +41,70 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
     }
   }, [initialNodes]);
 
-  // 5. Only open drawer when a node is explicitly clicked
   const onNodeClick = useCallback(
     (_: React.MouseEvent, node: FlowNode) => {
-      setSelectedNode(node.data);
+      setSelectedNode({
+        ...node.data,
+        id: node.id // Include the node ID
+      });
       setOpenDrawer(true);
     },
     []
   );
+
+  const handleExpandNode = useCallback(
+    async (nodeId: string, nodeContent: any) => {
+      if (!nodeId || !nodeContent) return;
+
+      setExpandingNodeId(nodeId);
+      setOpenDrawer(false);
+
+      try {
+        const response = await fetch("/api/question/expand", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            parentNodeId: nodeId,
+            parentNodeContent: nodeContent,
+            explorationSlug: initialData.slug
+          }),
+        })
+
+        const data = await response.json();
+
+        if (data.error) {
+          toast.error("", {
+            description: data.error,
+            duration: 5000,
+            dismissible: false,
+            icon: <Cross2Icon className="text-red-500 w-4 h-4" />,
+          });
+          return;
+        }
+
+        setInitialNodes((prevNodes: any[]) => [...prevNodes, data.newNode]);
+        setInitialEdges((prevEdges: any[]) => [...prevEdges, data.newEdge]);
+
+        toast.success("", {
+          description: "New insight added to your exploration",
+          duration: 5000,
+          dismissible: false,
+          icon: <CheckIcon className="text-green-500 w-4 h-4" />,
+        })
+
+        setExpandingNodeId(null);
+
+      } catch (e) {
+        toast.error("", {
+          description: "Failed to expand node",
+          duration: 5000,
+          dismissible: false,
+          icon: <Cross2Icon className="text-red-500 w-4 h-4" />,
+        });
+      }
+  }, [initialData.slug]);
   
   return (
     <div className="h-full w-full flex flex-col">
@@ -119,12 +166,26 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
                     ))}
                     </div>
                     <div className="flex justify-end items-center gap-1 mt-5">
-                    <button
+                      <button
                         disabled={initialNodes[0].data.description === selectedNode.description}
-                        className={`text-sm ${initialNodes[0].data.description === selectedNode.description ? 'bg-neutral-600/50' : 'bg-neutral-800 hover:bg-neutral-600 cursor-pointer'} text-neutral-50 rounded-md px-4 py-1`}
-                    >
-                        Continue exploring this path
-                    </button>
+                        onClick={() => handleExpandNode(selectedNode.id, selectedNode)}
+                        className={`text-sm ${
+                          initialNodes[0].data.description === selectedNode.description 
+                            ? 'bg-neutral-600/50' 
+                            : expandingNodeId === selectedNode.id
+                              ? 'bg-neutral-700 cursor-wait'
+                              : 'bg-neutral-800 hover:bg-neutral-600 cursor-pointer'
+                        } text-neutral-50 rounded-md px-4 py-1 flex items-center justify-center`}
+                      >
+                        {expandingNodeId === selectedNode.id ? (
+                          <>
+                            <div className="animate-spin w-3.5 h-3.5 border-2 border-neutral-300 border-t-transparent rounded-full mr-2"></div>
+                            Generating...
+                          </>
+                        ) : (
+                          "Continue exploring this path"
+                        )}
+                      </button>
                     </div>
                 </>
                 ) : (
@@ -168,11 +229,26 @@ export default function ExploreClient({ initialData }: { initialData: Exploratio
                         ))}
                     </div>
                     <div className="flex justify-end items-center gap-1 mt-5">
-                        <button
-                        className={`text-sm ${false ? 'bg-neutral-600/50' : 'bg-neutral-800 hover:bg-neutral-600 cursor-pointer'} text-neutral-50 rounded-md px-4 py-1`}
-                        >
-                        Continue exploring this path
-                        </button>
+                      <button
+                        disabled={initialNodes[0].data.description === selectedNode.description}
+                        onClick={() => handleExpandNode(selectedNode.id, selectedNode)}
+                        className={`text-sm ${
+                          initialNodes[0].data.description === selectedNode.description 
+                            ? 'bg-neutral-600/50' 
+                            : expandingNodeId === selectedNode.id
+                              ? 'bg-neutral-700 cursor-wait'
+                              : 'bg-neutral-800 hover:bg-neutral-600 cursor-pointer'
+                        } text-neutral-50 rounded-md px-4 py-1 flex items-center justify-center`}
+                      >
+                        {expandingNodeId === selectedNode.id ? (
+                          <>
+                            <div className="animate-spin w-3.5 h-3.5 border-2 border-neutral-300 border-t-transparent rounded-full mr-2"></div>
+                            Generating...
+                          </>
+                        ) : (
+                          "Continue exploring this path"
+                        )}
+                      </button>
                     </div>
                     </div>
                 )}

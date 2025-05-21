@@ -32,7 +32,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </header>
       <main className="flex-1">{children}</main>
       <footer>
-        <div className="flex items-center justify-center py-8">
+        <div className="flex items-center justify-center pb-8">
           <span className="text-sm text-neutral-800">
             Made by
             <a
