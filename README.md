@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## nodal - ai-powered knowledge graphs
+Visualize questions as expandable knowledge graphs using Sonar, with summaries, explanations, reasoning, and source links in each node.
+
+![preview](https://nodal.michahl.com/assets/og-image.jpg)
+
+## 🌟 Features
+- Interactive Knowledge Graphs: Visualize complex topics as interconnected nodes
+- AI-Powered Exploration: Expand any node to discover deeper insights using Perplexity's Sonar API
+- Source Attribution: Every insight includes links to reliable sources for further reading
+- User Authentication: Secure login to save and manage your knowledge explorations
+- Customizable Exploration: Build knowledge graphs by expanding the most interesting paths
+- Responsive Design: Seamless experience on both desktop and mobile devices
+- Node Management: Add, expand, and delete nodes to shape your knowledge exploration
+
+## Tech Stack
+- **Frontend**: Next.js, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Supabase
+- **AI**: Perplexity Sonar API
+- **Authentication**: Supabase Auth
+- **Database**: PostgreSQL (via Supabase)
 
 ## Getting Started
+Prerequisites
+- Sonar API key
+- Supabase account
 
-First, run the development server:
+Environment Setup
+Create a `.env.local` file with the following data:
+```
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Sonar API
+NEXT_PUBLIC_PERPLEXITY_API_KEY=your_perplexity_api_key
+```
+
+Installation:
 
 ```bash
+# Clone the repository
+git clone https://github.com/michahl/nodal.git
+cd nodal
+
+# Install dependencies
+npm install
+# or
+yarn install
+# or
+pnpm install
+
+# Run the development server
 npm run dev
 # or
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔍 How It Works
+1. **Create an Exploration**: Start with a question or topic you want to explore
+2. **Initial Node Generation**: The first node presenting an overview of your topic is created
+3. **Explore Deeper**: Click on any node to view its details and sources
+4. **Expand Nodes**: Choose aspects you want to explore further and create new connected nodes
+5. **Build Your Knowledge Graph**: Continue expanding nodes to create a personalized knowledge map
+6. **Navigate and Learn**: Use the interactive graph to navigate between connected concepts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📦 Project Structure
+```
+nodal/
+├── public/             # Static assets
+├── src/
+│   ├── app/
+│   │   ├── api/        # API routes for Sonar integration
+│   │   ├── dashboard/  # Dashboard and explore pages
+│   │   ├── layout.tsx  # Root layout with metadata
+│   │   └── page.tsx    # Landing page
+│   ├── components/     # React components
+│   │   ├── dashboard/  # Dashboard components
+│   │   ├── explore/    # Knowledge graph components
+│   │   └── ui/         # Reusable UI components
+│   ├── context/        # React context providers
+│   ├── hooks/          # Custom React hooks
+│   └── utils/          # Utility functions and helpers
+└── package.json        # Project dependencies and scripts
+```
