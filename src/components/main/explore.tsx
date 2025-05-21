@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, use } from "react";
-import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
-import { Dialog, DialogContent, DialogDescription, DialogContext } from "../ui/dialog";
+import { CheckIcon, Cross2Icon, MagicWandIcon } from "@radix-ui/react-icons";
+import { DialogContent, DialogDescription, DialogContext } from "../ui/dialog";
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/sonar";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,23 +15,18 @@ const examples = [
     "🌌 How do black holes form?",
     "🤔 What is the meaning of life?",
     "🌐 How does the internet work?",
-    "🧲 What is the theory of relativity?",
     "💉 How do vaccines work?",
     "⏳ What is the nature of time?",
     "🔭 How do we know the universe is expanding?",
     "🧬 What is the origin of life?",
     "🌍 How do we know the Earth is round?",
     "🌀 What is the nature of reality?",
-    "⚡ How do we know the speed of light is constant?",
     "🧘 What is the nature of consciousness?",
     "🌌 What is the nature of space?",
     "🔢 How do we know the universe is finite?",
     "🪐 What is the nature of matter?",
-    "🌠 How do we know the universe is homogeneous?",
     "🔥 What is the nature of energy?",
-    "🔄 How do we know the universe is isotropic?",
     "🌑 What is the nature of gravity?",
-    "🚀 How do we know the universe is accelerating?",
     "🌑 What is the nature of dark matter?",
     "📏 How do we know the universe is flat?",
     "🌑 What is the nature of dark energy?",
@@ -42,6 +37,11 @@ export default function Explore() {
     const [step, setStep] = useState(0);
     const [question, setQuestion] = useState("");
     const [showAuthDialog, setShowAuthDialog] = useState(false);
+    const [example, setExamples] = useState(examples
+        .slice(0)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+    );
     
     // Create refs to store dialog methods
     const processingDialogRef = useRef<{openDialog?: () => void; closeDialog?: () => void}>({});
@@ -214,8 +214,9 @@ export default function Explore() {
                     />
                     <button 
                         type="submit"
-                        className="cursor-pointer text-neutral-50 border border-neutral-800 bg-neutral-800 px-4 py-1.5 rounded-r-lg hover:bg-neutral-600 hover:border-neutral-600"
+                        className="group cursor-pointer flex items-center gap-2 text-neutral-50 border border-neutral-800 bg-neutral-800 px-4 py-1.5 rounded-r-lg hover:bg-neutral-800/95 hover:border-neutral-800/95 transition-colors duration-200 ease-out"
                     >
+                        <MagicWandIcon className="group-hover:rotate-6 transition-transform duration-400 ease-in-out w-3.5 h-3.5" />
                         Explore
                     </button>
                 </form>
@@ -226,10 +227,7 @@ export default function Explore() {
                 </p>
                 <div className="w-full flex flex-wrap items-center justify-center gap-2">
                     {
-                        examples
-                            .slice(0)
-                            .sort(() => 0.5 - Math.random())
-                            .slice(0, 3)
+                        example
                             .map((example, index) => (
                                 <button
                                     key={index}
