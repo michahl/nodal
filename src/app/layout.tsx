@@ -17,7 +17,8 @@ export const metadata: Metadata = {
   authors: [{ name: "michahl", url: "https://github.com/michahl" }],
   creator: "michahl",
   publisher: "michahl",
-
+  metadataBase: new URL("https://nodal.michahl.com"),
+  applicationName: "nodal",
   openGraph: {
     type: "website",
     locale: "en_US",

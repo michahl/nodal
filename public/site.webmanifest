@@ -31,32 +31,16 @@
   "categories": ["productivity", "education", "visualization", "research"],
   "screenshots": [
     {
-      "src": "/assets/screenshots/desktop.png",
+      "src": "/assets/screenshots/desktop.jpeg",
       "sizes": "1280x800",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "wide"
     },
     {
-      "src": "/assets/screenshots/mobile.png",
+      "src": "/assets/screenshots/mobile.jpeg",
       "sizes": "750x1334",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "narrow"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "New Knowledge Graph",
-      "short_name": "New Graph",
-      "description": "Create a new knowledge graph",
-      "url": "/dashboard",
-      "icons": [{"src": "/assets/favicon/shortcut-new.png", "sizes": "96x96"}]
-    },
-    {
-      "name": "My Dashboard",
-      "short_name": "Dashboard",
-      "description": "View your knowledge graphs",
-      "url": "/dashboard",
-      "icons": [{"src": "/assets/favicon/shortcut-dashboard.png", "sizes": "96x96"}]
     }
   ],
   "related_applications": [],

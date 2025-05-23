@@ -21,9 +21,9 @@ export default function UserPage() {
                                 Deleting your account is permanent and cannot be undone. Your data will be deleted immediately and you will lose access to all your saved data.
                             </span>
 
-                            <button className="mt-3 text-sm border-red-600 border rounded bg-red-400 text-white px-5 py-0.5 cursor-pointer">
-                                Delete account
-                            </button>
+                            <p className="mt-3 text-sm rounded bg-red-200 text-red-500 px-5 py-0.5">
+                                Contact <a href="mailto:nodal@michahl.com" className="font-medium">nodal@michahl.com</a> to request account deletion
+                            </p>
                         </div>
 
                     </div>
