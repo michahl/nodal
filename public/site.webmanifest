@@ -1,7 +1,7 @@
 {
   "name": "nodal - ai-powered knowledge maps",
   "short_name": "nodal",
-  "description": "Visualize questions as expandable knowledge graphs using Sonar, with summaries, explanations, reasoning, and source links in each node.",
+  "description": "Explore questions as interactive knowledge graphs with Sonar, featuring summaries, explanations, reasoning, and source links in every node.",
   "start_url": "/",
   "id": "/",
   "icons": [
