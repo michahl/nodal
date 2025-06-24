@@ -36,6 +36,10 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
         });
 
         if (error) {
+            if (error.status == 400) {
+                setError('Please check your username and password')
+                return;
+            };
             setError(error.message);
             return;
         }
@@ -72,6 +76,17 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
         onAuthSuccess?.();
     };
 
+    const handleAuthChange = (type: string) => {
+        setError('');
+        setEmail('');
+        setPassword('');
+        if (type == 'login') {
+            setLogin(true);
+        } else {
+            setLogin(false);
+        }
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -107,7 +122,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                 <div className="grid grid-cols-2 relative z-10">
                     <button
                         type="button"
-                        onClick={() => setLogin(true)}
+                        onClick={() => handleAuthChange('login')}
                         className={`${login ? "text-neutral-50" : "text-black"} relative z-10 rounded-md py-1 transition-colors duration-200`}
                     >
                         Sign in
@@ -115,7 +130,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                     
                     <button
                         type="button"
-                        onClick={() => setLogin(false)}
+                        onClick={() => handleAuthChange('signup')}
                         className={`${!login ? "text-neutral-50" : "text-black"} relative z-10 rounded-md py-1 transition-colors duration-200`}
                     >
                         Create account
@@ -139,7 +154,7 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="x@example.com"
-                            className="w-full text-sm px-2 py-1.5 border border-neutral-200 rounded-md"
+                            className={`w-full text-sm px-2 py-1.5 border rounded-md ${error ? 'border-red-500/60' : 'border-neutral-200'}`}
                         />
 
                         <label 
@@ -155,16 +170,8 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="********"
-                            className="w-full text-sm px-2 py-1.5 border border-neutral-200 rounded-md"
+                            className={`w-full text-sm px-2 py-1.5 border rounded-md ${error ? 'border-red-500/60' : 'border-neutral-200'}`}
                         />
-
-                        <button
-                            type="submit"
-                            className="flex items-center justify-center w-full mt-3 bg-neutral-800 text-neutral-50 rounded-md min-h-9 py-1.5 hover:bg-neutral-700 cursor-pointer"
-                            disabled={loading}
-                        >
-                            {loading ? <LoadingSpinner /> : "Sign in"}
-                        </button>
                         {
                             error && (
                                 <motion.div
@@ -176,6 +183,14 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                                 </motion.div>
                             )
                         }
+                        <button
+                            type="submit"
+                            className="flex items-center justify-center w-full mt-3 bg-neutral-800 text-neutral-50 rounded-md min-h-9 py-1.5 hover:bg-neutral-700 cursor-pointer"
+                            disabled={loading}
+                        >
+                            {loading ? <LoadingSpinner /> : "Sign in"}
+                        </button>
+
                     </div>
                 ) : (
                     <div className="mt-3">
@@ -210,14 +225,6 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                             placeholder="********"
                             className="w-full text-sm px-2 py-1.5 border border-neutral-200 rounded-md"
                         />
-
-                        <button
-                            type="submit"
-                            className="flex items-center justify-center w-full mt-3 bg-neutral-800 text-neutral-50 rounded-md min-h-9 py-1.5 hover:bg-neutral-700 cursor-pointer"
-                            disabled={loading}
-                        >
-                            {loading ? <LoadingSpinner /> : "Create account"}
-                        </button>
                         {
                             error && (
                                 <motion.div
@@ -229,6 +236,13 @@ export default function SignIn({ onAuthSuccess }: { onAuthSuccess?: () => void }
                                 </motion.div>
                             )
                         }
+                        <button
+                            type="submit"
+                            className="flex items-center justify-center w-full mt-3 bg-neutral-800 text-neutral-50 rounded-md min-h-9 py-1.5 hover:bg-neutral-700 cursor-pointer"
+                            disabled={loading}
+                        >
+                            {loading ? <LoadingSpinner /> : "Create account"}
+                        </button>
                     </div>
                 )
             }
